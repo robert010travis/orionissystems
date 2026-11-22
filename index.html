@@ -61,6 +61,56 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
 @media(prefers-reduced-motion:no-preference){.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}.rv.in{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 </style>
+<style>
+.chips button[aria-pressed="true"]{box-shadow:0 0 0 3px rgba(8,124,255,.22)}
+.selection-status{margin:10px 0 0;font-size:.9rem;line-height:1.5}
+.service-preview{padding:18px;border:1px solid #cfe2f5;border-radius:20px;background:#f1f8ff;color:#122b53}
+.preview-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.preview-caption strong{font-size:.95rem;color:#122b53}
+.preview-caption small{font-size:.68rem;color:#496582;text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.preview-screen{position:relative;overflow:hidden;padding:13px;border-radius:13px;background:#102d5c;color:#fff;box-shadow:0 8px 20px rgba(7,27,73,.14)}
+.preview-toolbar{display:flex;align-items:center;gap:5px;margin-bottom:12px;font-size:.7rem;font-weight:700;color:#c9e6ff}
+.preview-toolbar i{width:5px;height:5px;border-radius:50%;background:#7fd0ff}
+.preview-toolbar span{margin-left:7px}
+.preview-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.preview-card{min-width:0;padding:10px 8px;border:1px solid rgba(168,218,255,.2);border-radius:9px;background:rgba(255,255,255,.09)}
+.preview-card b{display:block;min-height:2.5em;font-size:.68rem;line-height:1.25;overflow-wrap:anywhere}
+.preview-bar{display:block;height:5px;margin-top:8px;border-radius:5px;background:#56c7ff;transform-origin:left}
+.preview-bar:nth-of-type(2){width:65%;background:#a1dbff}
+.preview-bar:nth-of-type(3){width:40%;background:#729dc6}
+.preview-website .preview-card:first-child{grid-column:span 2;background:linear-gradient(135deg,#087cff,#18bfff)}
+.preview-website .preview-card:last-child{border:3px solid #cfeaff;background:#173b72}
+.preview-equipment .preview-card:before{content:"";display:block;width:25px;height:17px;margin-bottom:9px;border:2px solid #7fd0ff;border-radius:3px;box-shadow:0 4px 0 -2px #7fd0ff}
+.preview-equipment .preview-card:nth-child(2):before{height:13px;border-radius:2px;box-shadow:0 4px 0 -1px #7fd0ff}
+.preview-equipment .preview-card:nth-child(3):before{height:12px;border-radius:2px;box-shadow:0 5px 0 -1px #7fd0ff}
+.dash-detail .service-preview{margin:14px 0;background:#eaf5ff}
+.hero .hero-explore-hint{margin:20px 0 0;font-size:.88rem;font-weight:650;color:#496582}
+.float-card{font-family:inherit;line-height:1.35;text-align:left;cursor:pointer}
+.float-card:hover,.float-card[aria-pressed="true"]{border-color:#087cff;box-shadow:0 0 0 3px rgba(8,124,255,.2),var(--shadow)}
+.hero-preview{width:100%;min-width:0}
+.hero-preview .service-preview{box-shadow:var(--shadow)}
+.hero-preview a{display:inline-block;margin-top:14px;color:#075bb9;font-size:.9rem;font-weight:750}
+@media(min-width:1100px){
+ .hero-grid.exploring{grid-template-columns:minmax(0,1fr) minmax(300px,.95fr) minmax(240px,.8fr);gap:20px}
+ .hero-grid.exploring .float-card{padding:10px;font-size:.76rem}
+}
+@media(max-width:1099px){
+ .hero-preview{grid-column:1 / -1;max-width:520px;justify-self:center}
+}
+@media(max-width:380px){
+ .hero-visual .fc-two{bottom:105px}
+}
+@media(prefers-reduced-motion:no-preference){
+ .preview-bar{animation:preview-pulse 1.8s ease-in-out 2 alternate}
+ .preview-card:nth-child(2) .preview-bar{animation-delay:.4s}
+ .preview-card:nth-child(3) .preview-bar{animation-delay:.8s}
+ @keyframes preview-pulse{from{transform:scaleX(.55);opacity:.65}to{transform:scaleX(1);opacity:1}}
+}
+@media(max-width:700px){
+ .dock{bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+ footer{padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))}
+}
+</style>
 </head>
 <body>
 <a class="skip" href="#home">Skip to content</a>
@@ -71,10 +121,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
       <span class="logo-img" role="img" aria-label="Orionis Systems emblem"></span>
       <span>ORIONIS<small>SYSTEMS</small></span>
     </a>
-    <button class="menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <button class="menu" id="menuBtn" type="button" aria-label="Open navigation" aria-controls="navLinks" aria-expanded="false">☰</button>
     <nav class="navlinks" id="navLinks">
       <a href="#services">Services</a><a href="#systems">Business systems</a><a href="#work" id="navWork" hidden>Our work</a><a href="#process">How we work</a><a href="#contact">Contact</a>
-      <a class="btn btn-primary" href="#contact">Request a consultation</a>
+      <a class="btn btn-primary" href="#contact">Request a project consultation</a>
       <button class="theme" id="themeBtn" type="button" aria-label="Switch to dark theme">◐</button>
     </nav>
   </div>
@@ -87,17 +137,19 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
    <span class="eyebrow">Technology that moves business forward</span>
    <h1>Smart digital tools.<br><span class="gradient-text">Stronger businesses.</span></h1>
    <p>Orionis Systems builds modern websites and practical management information systems for organisations, and supplies computers and essential IT equipment.</p>
-   <div class="hero-actions"><a class="btn btn-primary" href="#contact">Let's discuss your project <span>→</span></a><a class="btn btn-outline" href="#services">Explore our services</a></div>
+   <div class="hero-actions"><a class="btn btn-primary" href="#contact">Request a project consultation <span>→</span></a><a class="btn btn-outline" href="#services">Explore our services</a></div>
    <div class="trustline"><span>Serving</span><b>factories</b><span>•</span><b>schools</b><span>•</span><b>hotels</b><span>•</span><b>growing businesses</b></div>
+   <p class="hero-explore-hint">Select a service to explore a preview.</p>
   </div>
   <div class="hero-visual">
    <div class="orbit">
     <div class="logo-img logo-large" role="img" aria-label="Orionis Systems emblem"></div>
    </div>
-   <div class="float-card fc-one">Web development<small>Professional online presence</small></div>
-   <div class="float-card fc-two">Business automation<small>Connected operations</small></div>
-   <div class="float-card fc-three">IT equipment<small>Computers & accessories</small></div>
+   <button type="button" class="float-card fc-one" data-hero-preview="website" aria-pressed="false" aria-controls="heroPreview">Web development<small>Professional online presence</small></button>
+   <button type="button" class="float-card fc-two" data-hero-preview="system" aria-pressed="false" aria-controls="heroPreview">Business automation<small>Connected operations</small></button>
+   <button type="button" class="float-card fc-three" data-hero-preview="equipment" aria-pressed="false" aria-controls="heroPreview">IT equipment<small>Computers & accessories</small></button>
   </div>
+  <div class="hero-preview" id="heroPreview" aria-live="polite" hidden></div>
  </div>
 </section>
 
@@ -105,9 +157,9 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
  <div class="container">
   <div class="section-head"><span class="eyebrow">What we do</span><h2>Technology solutions for the way you work</h2><p>From your first website to the systems that run daily operations, we help bring your technology together.</p></div>
   <div class="grid3">
-   <article class="service-card"><div class="iconbox"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3M3 8h18"/></svg></div><h3>Website design & development</h3><p>Responsive business websites, company profiles, landing pages, online catalogues and custom web applications designed around your goals.</p><a class="learn" href="#contact">Build your website →</a></article>
+   <article class="service-card"><div class="iconbox"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3M3 8h18"/></svg></div><h3>Website design & development</h3><p>Responsive business websites, company profiles, landing pages, online catalogues and custom web applications designed around your goals.</p><a class="learn" href="#contact" data-select="website">Build your website →</a></article>
    <article class="service-card"><div class="iconbox"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></svg></div><h3>Management information systems</h3><p>Purpose-built software that helps teams capture information, manage workflows, monitor performance and make better decisions.</p><a class="learn" href="#systems">Explore business systems →</a></article>
-   <article class="service-card"><div class="iconbox"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 8h10"/></svg></div><h3>Computers & IT equipment</h3><p>Computers, laptops, printers, networking gear and accessories for offices, schools, hotels and growing businesses. Tell us what you need and we will help you specify it.</p><a class="learn" href="#contact">Enquire about equipment →</a></article>
+   <article class="service-card"><div class="iconbox"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4M7 8h10"/></svg></div><h3>Computers & IT equipment</h3><p>Computers, laptops, printers, networking gear and accessories for offices, schools, hotels and growing businesses. Tell us what you need and we will help you specify it.</p><a class="learn" href="#contact" data-select="equipment">Enquire about equipment →</a></article>
   </div>
  </div>
 </section>
@@ -123,7 +175,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
     <div class="check"><i>✓</i>Reports and dashboards</div><div class="check"><i>✓</i>Workflow management</div>
     <div class="check"><i>✓</i>Reliable data capture</div><div class="check"><i>✓</i>Designed to scale</div>
    </div>
-   <a class="btn btn-primary" href="#contact">Discuss a custom system →</a>
+   <a class="btn btn-primary" href="#contact" data-select="system">Discuss a custom system →</a>
   </div>
   <div class="system-panel">
    <div class="panel-top"><span>Solutions for your sector</span><b class="status">Tailored to your needs</b></div>
@@ -158,18 +210,20 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
 </section>
 
 <section class="cta">
- <div class="container cta-inner"><div><h2>Have a project in mind?</h2><p>Let's talk about the website, system or equipment your organisation needs.</p></div><a class="btn" href="#contact">Talk to Orionis Systems <span>→</span></a></div>
+ <div class="container cta-inner"><div><h2>Have a project in mind?</h2><p>Let's talk about the website, system or equipment your organisation needs.</p></div><a class="btn" href="#contact">Request a project consultation <span>→</span></a></div>
 </section>
 
 <section class="section" id="contact">
  <div class="container contact-grid">
   <div class="contact-info">
    <span class="eyebrow">Get in touch</span><h2>Let's build something that works.</h2>
-   <p>Tell us about the website, system or equipment your organisation needs and we will reply with a clear next step.</p>
+   <p>Tell us what your organisation needs and any target date. We’ll review your message and reply with a clear next step.</p>
    <p class="chips-label">I am interested in:</p>
-   <div class="chips" id="chips" role="group" aria-label="What do you need?"><button type="button" data-need="a website" aria-pressed="false">A website</button><button type="button" data-need="a management system" aria-pressed="false">A business system</button><button type="button" data-need="computers or IT equipment" aria-pressed="false">Computers / IT</button><button type="button" data-need="something else" aria-pressed="false">Something else</button></div>
+   <div class="chips" id="chips" role="group" aria-label="What do you need?" aria-describedby="selectionStatus"><button type="button" data-preview="website" data-need="a website" aria-pressed="false">A website</button><button type="button" data-preview="system" data-need="a management system" aria-pressed="false">A business system</button><button type="button" data-preview="equipment" data-need="computers or IT equipment" aria-pressed="false">Computers / IT</button><button type="button" data-preview="other" data-need="something else" aria-pressed="false">Something else</button></div>
+   <p class="selection-status" id="selectionStatus" aria-live="polite">Choose an option to tailor your WhatsApp message.</p>
   </div>
   <div class="contact-options" id="contactOptions">
+   <div id="contactPreview" hidden></div>
    <a class="contact-card" id="ccWhatsapp" hidden><div class="iconbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></div><div><strong>Message us on WhatsApp</strong><small></small></div></a>
    <a class="contact-card" id="ccEmail" hidden><div class="iconbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></div><div><strong>Send an email</strong><small></small></div></a>
    <a class="contact-card" id="ccPhone" hidden><div class="iconbox"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16.5v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 10 18.4a19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 1.5 4.2 2 2 0 0 1 3.5 2h3a2 2 0 0 1 2 1.7l.5 2.7a2 2 0 0 1-.6 1.8L7 9.6a16 16 0 0 0 6 6l1.4-1.4a2 2 0 0 1 1.8-.6l2.7.5a2 2 0 0 1 2.1 2.4z"/></svg></div><div><strong>Call us</strong><small></small></div></a>
@@ -190,13 +244,13 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offse
    </div>
    <div class="footer-links">
     <div><strong>Explore</strong><a href="#services">Our services</a><a href="#systems">Business systems</a><a href="#process">Our approach</a></div>
-    <div><strong>Start here</strong><a href="#contact">Request a consultation</a><a href="#contact">Ask about computers</a><a href="#contact">Discuss a system</a></div>
+    <div><strong>Start here</strong><a href="#contact">Request a project consultation</a><a href="#contact" data-select="equipment">Ask about computers</a><a href="#contact" data-select="system">Discuss a system</a></div>
    </div>
   </div>
   <div class="copyright"><span>© <span id="year"></span> Orionis Systems. All rights reserved.</span><span>Built for better business operations.</span></div>
  </div>
 </footer>
-<div class="dock" id="dock" hidden></div>
+<div class="dock" id="dock" role="group" aria-label="Quick contact options" aria-hidden="true" inert hidden></div>
 <script>
 /* ---- Edit these details, then save ---------------------------------
    whatsapp: digits only with country code, e.g. '256700000000'
@@ -207,16 +261,53 @@ const CONTACT={email:'',phone:'+256 740 010 764',whatsapp:'256740010764'};
 const PROJECTS=[];
 /* -------------------------------------------------------------------- */
 const menuBtn=document.getElementById('menuBtn'),navLinks=document.getElementById('navLinks');
-function closeMenu(){navLinks.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');menuBtn.textContent='\u2630';}
-menuBtn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open));menuBtn.textContent=open?'\u00d7':'\u2630';});
+function closeMenu(){navLinks.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');menuBtn.setAttribute('aria-label','Open navigation');menuBtn.textContent='\u2630';}
+menuBtn.addEventListener('click',()=>{const open=navLinks.classList.toggle('open');menuBtn.setAttribute('aria-expanded',String(open));menuBtn.setAttribute('aria-label',open?'Close navigation':'Open navigation');menuBtn.textContent=open?'\u00d7':'\u2630';});
 navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&navLinks.classList.contains('open')){closeMenu();menuBtn.focus();}});
 document.getElementById('year').textContent=new Date().getFullYear();
 
 const digits=s=>String(s).replace(/\D/g,'');
 let need='';
 const msg=()=>'Hello Orionis Systems, I would like to discuss '+(need||'a project')+'.';
 const dock=document.getElementById('dock');
+const selectionStatus=document.getElementById('selectionStatus');
+function updateSelectionStatus(label){
+ selectionStatus.textContent=need?'Selected: '+label+'. Your WhatsApp message will mention '+need+'.':'Choose an option to tailor your WhatsApp message.';
+}
+const PREVIEWS={
+ website:{title:'Website preview',screen:'Your online presence',cards:['Desktop website','Pages & content','Mobile website'],style:'website'},
+ system:{title:'Business systems preview',screen:'Connected operations',cards:['School systems','Factory systems','Hotel systems']},
+ equipment:{title:'Computers & IT preview',screen:'Your workspace',cards:['Computers','Laptops','Printers & network'],style:'equipment'},
+ other:{title:'Custom solution preview',screen:'Built around your needs',cards:['Your goals','Your team','Your workflow']},
+ factory:{title:'Factory system preview',screen:'Factory dashboard',cards:['Production','Inventory','Quality checks']},
+ school:{title:'School system preview',screen:'School dashboard',cards:['Students','Attendance','Fees & results']},
+ hotel:{title:'Hotel system preview',screen:'Hotel dashboard',cards:['Reservations','Room status','Guest billing']},
+ mis:{title:'Custom system preview',screen:'Business dashboard',cards:['Workflows','Reports','Role-based access']}
+};
+function makePreview(key){
+ const data=PREVIEWS[key],preview=document.createElement('div');
+ preview.className='service-preview';
+ const caption=document.createElement('div');caption.className='preview-caption';
+ const title=document.createElement('strong');title.textContent=data.title;
+ const note=document.createElement('small');note.textContent='Illustrative preview';caption.append(title,note);
+ const screen=document.createElement('div');screen.className='preview-screen'+(data.style?' preview-'+data.style:'');
+ const toolbar=document.createElement('div');toolbar.className='preview-toolbar';
+ for(let i=0;i<3;i++){const dot=document.createElement('i');dot.setAttribute('aria-hidden','true');toolbar.append(dot);}
+ const screenTitle=document.createElement('span');screenTitle.textContent=data.screen;toolbar.append(screenTitle);
+ const cards=document.createElement('div');cards.className='preview-cards';
+ data.cards.forEach(text=>{
+  const card=document.createElement('div');card.className='preview-card';
+  const label=document.createElement('b');label.textContent=text;card.append(label);
+  for(let i=0;i<3;i++){const bar=document.createElement('span');bar.className='preview-bar';bar.setAttribute('aria-hidden','true');card.append(bar);}
+  cards.append(card);
+ });
+ screen.append(toolbar,cards);preview.append(caption,screen);return preview;
+}
+const contactPreview=document.getElementById('contactPreview');
+function showContactPreview(key){
+ contactPreview.replaceChildren(...(key?[makePreview(key)]:[]));contactPreview.hidden=!key;
+}
 function render(){
  const L={ccWhatsapp:CONTACT.whatsapp&&['https://wa.me/'+digits(CONTACT.whatsapp)+'?text='+encodeURIComponent(msg()),'Chat with us directly','WhatsApp'],
   ccEmail:CONTACT.email&&['mailto:'+CONTACT.email+'?subject='+encodeURIComponent('Enquiry - Orionis Systems')+'&body='+encodeURIComponent(msg()),CONTACT.email,'Email'],
@@ -227,8 +318,29 @@ function render(){
  dock.hidden=!n;
 }
 const chips=[...document.querySelectorAll('#chips button')];
-function pick(btn){chips.forEach(c=>c.setAttribute('aria-pressed',String(c===btn)));need=btn?btn.dataset.need:'';render();}
+function pick(btn){chips.forEach(c=>c.setAttribute('aria-pressed',String(c===btn)));need=btn?btn.dataset.need:'';updateSelectionStatus(btn?btn.textContent:'');showContactPreview(btn?btn.dataset.preview:'');render();}
 chips.forEach(c=>c.addEventListener('click',()=>pick(c.getAttribute('aria-pressed')==='true'?null:c)));
+document.querySelectorAll('[data-select]').forEach(a=>a.addEventListener('click',()=>pick(chips.find(c=>c.dataset.preview===a.dataset.select))));
+
+const heroGrid=document.querySelector('.hero-grid'),heroPreview=document.getElementById('heroPreview');
+const heroButtons=[...document.querySelectorAll('[data-hero-preview]')],orbit=document.querySelector('.orbit');
+let orbitAnimation;
+heroButtons.forEach(button=>button.addEventListener('click',()=>{
+ const selected=button.getAttribute('aria-pressed')!=='true',key=button.dataset.heroPreview;
+ heroButtons.forEach(b=>b.setAttribute('aria-pressed',String(selected&&b===button)));
+ heroGrid.classList.toggle('exploring',selected);heroPreview.hidden=!selected;
+ heroPreview.replaceChildren();
+ if(!selected)return;
+ const preview=makePreview(key),link=document.createElement('a');
+ link.href=key==='system'?'#systems':'#contact';
+ link.textContent=key==='system'?'Explore business systems \u2192':'Discuss this service \u2192';
+ link.addEventListener('click',()=>pick(chips.find(c=>c.dataset.preview===key)));
+ preview.append(link);heroPreview.append(preview);
+ if(matchMedia('(prefers-reduced-motion:no-preference)').matches){
+  if(orbitAnimation)orbitAnimation.cancel();
+  orbitAnimation=orbit.animate([{transform:'scale(1)'},{transform:'scale(1.025)'},{transform:'scale(1)'}],{duration:500,easing:'ease-in-out'});
+ }
+}));
 
 const SECTORS={factory:['Factory','a factory management system',['Production tracking','Inventory and stock','Quality checks','Operations reports']],
  school:['School','a school management system',['Student records','Fees and payments','Attendance','Exam results']],
@@ -240,15 +352,16 @@ function selectSector(b){
  detail.textContent='';const t=document.createElement('strong');t.textContent='What a '+S[0].toLowerCase()+' system can cover';
  const ul=document.createElement('ul');S[2].forEach(i=>{const li=document.createElement('li');li.textContent=i;ul.append(li);});
  const a=document.createElement('a');a.href='#contact';a.textContent='Discuss this system \u2192';
- a.addEventListener('click',()=>{need=S[1];chips.forEach(c=>c.setAttribute('aria-pressed',String(c===chips[1])));render();});
- detail.append(t,ul,a);
+ a.addEventListener('click',()=>{need=S[1];chips.forEach(c=>c.setAttribute('aria-pressed',String(c===chips[1])));updateSelectionStatus(chips[1].textContent);showContactPreview(b.dataset.k);render();});
+ detail.append(t,ul,makePreview(b.dataset.k),a);
 }
 sectorBtns.forEach(b=>b.addEventListener('click',()=>selectSector(b)));selectSector(sectorBtns[0]);
 render();
 
-const bar=document.getElementById('progress'),head=document.querySelector('header');let tick=false;
+const bar=document.getElementById('progress'),head=document.querySelector('header');let tick=false,lastY=scrollY;
 function onScroll(){tick=false;const y=scrollY,max=document.documentElement.scrollHeight-innerHeight;
- bar.style.transform='scaleX('+(max>0?Math.min(y/max,1):0)+')';head.classList.toggle('stuck',y>10);dock.classList.toggle('show',y>500);}
+ bar.style.transform='scaleX('+(max>0?Math.min(y/max,1):0)+')';head.classList.toggle('stuck',y>10);
+ const dockVisible=y>500&&y<lastY;dock.classList.toggle('show',dockVisible);dock.setAttribute('aria-hidden',String(!dockVisible));dock.inert=!dockVisible;lastY=y;}
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(onScroll);}},{passive:true});onScroll();
 const spy={};navLinks.querySelectorAll('a[href^="#"]:not(.btn)').forEach(a=>spy[a.getAttribute('href').slice(1)]=a);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){Object.values(spy).forEach(a=>a.classList.remove('on'));const a=spy[e.target.id];if(a)a.classList.add('on');}}),{rootMargin:'-40% 0px -55% 0px'});
